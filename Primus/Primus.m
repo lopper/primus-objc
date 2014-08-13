@@ -82,6 +82,11 @@
 {
     [self on:@"outgoing::open" listener:^{
         _readyState = kPrimusReadyStateOpening;
+        [self timeout];
+    }];
+
+    [self on:@"outgoing::reconnect" listener:^{
+        [self timeout];
     }];
 
     [self on:@"incoming::open" listener:^{
@@ -465,19 +470,11 @@
  */
 - (void)timeout
 {
-    recursiveBlock(remove, ^(id block) {
-        [self removeListener:@"error" listener:block];
-        [self removeListener:@"open" listener:block];
-        [self removeListener:@"end" listener:block];
-
+    _timers.connect = [NSTimer scheduledTimerWithTimeInterval:self.options.timeout block:^{
         [_timers.connect invalidate];
         _timers.connect = nil;
-    });
 
-    _timers.connect = [NSTimer scheduledTimerWithTimeInterval:self.options.timeout block:^{
-        remove();
-
-        if (kPrimusReadyStateOpen == self.readyState || _attemptOptions.attempt) {
+        if (kPrimusReadyStateOpen == self.readyState) {
             return;
         }
 
@@ -489,10 +486,6 @@
             [self end];
         }
     } repeats:NO];
-
-    [self on:@"error" listener:remove];
-    [self on:@"open" listener:remove];
-    [self on:@"end" listener:remove];
 }
 
 /**
