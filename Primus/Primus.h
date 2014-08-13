@@ -38,4 +38,6 @@
 @property (nonatomic) id<TransformerProtocol> transformer;
 @property (nonatomic) id<ParserProtocol> parser;
 
+- (void)reconnect;
+
 @end
