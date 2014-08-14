@@ -521,6 +521,8 @@
 
     [self emit:@"reconnecting", options];
 
+    options.timeout = ceilf(options.timeout);
+
     _timers.reconnect = [NSTimer scheduledTimerWithTimeInterval:options.timeout block:^{
         _timers.reconnect = nil;
 
