@@ -207,25 +207,29 @@
     @weakify(self);
 
     _reach.reachableBlock = ^(Reachability *reach) {
-        @strongify(self);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            @strongify(self);
 
-        self->_online = YES;
+            self->_online = YES;
 
-        [self emit:@"online"];
+            [self emit:@"online"];
 
-        if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
-            [self reconnect];
-        }
+            if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
+                [self reconnect];
+            }
+        });
     };
 
     _reach.unreachableBlock = ^(Reachability *reach) {
-        @strongify(self);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            @strongify(self);
 
-        self->_online = NO;
+            self->_online = NO;
 
-        [self emit:@"offline"];
+            [self emit:@"offline"];
 
-        [self end];
+            [self end];
+        });
     };
 
     [_reach startNotifier];
