@@ -19,6 +19,8 @@
  */
 - (id)initWithPrimus:(id<PrimusProtocol>)primus;
 
+- (void)onEvent:(NSString *)event userInfo:(NSDictionary *)userInfo;
+
 @optional
 
 /**

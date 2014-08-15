@@ -23,10 +23,17 @@ typedef NS_ENUM(int16_t, PrimusReadyState) {
 
 typedef BOOL (^PrimusTransformCallback)(NSMutableDictionary *data);
 
+@protocol PrimusDelegate <NSObject>
+
+- (void)onEvent:(NSString *)event userInfo:(NSDictionary *)userInfo;
+
+@end
+
 @protocol PrimusProtocol <NSObject>
 
 @property (nonatomic) NSURLRequest *request;
 @property (nonatomic, readonly) PrimusConnectOptions *options;
+@property (nonatomic, weak) id<PrimusDelegate> primusDelegate;
 
 /**
  *  The init method is disabled. Please call one of the other initializers.
@@ -121,5 +128,7 @@ typedef BOOL (^PrimusTransformCallback)(NSMutableDictionary *data);
  *  @param fn   A callback block.
  */
 - (void)transform:(NSString *)type fn:(PrimusTransformCallback)fn;
+
+- (void)onEvent:(NSString *)event userInfo:(NSDictionary *)userInfo;
 
 @end

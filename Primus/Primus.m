@@ -15,10 +15,37 @@
 
 #import "Primus.h"
 
+// Public events
+NSString * const PrimusEventReconnect = @"reconnect";
+NSString * const PrimusEventReconnecting = @"reconnecting";
+NSString * const PrimusEventOnline = @"online";
+NSString * const PrimusEventOffline = @"offline";
+NSString * const PrimusEventOpen = @"open";
+NSString * const PrimusEventError = @"error";
+NSString * const PrimusEventData = @"data";
+NSString * const PrimusEventEnd = @"end";
+NSString * const PrimusEventClose = @"close";
+NSString * const PrimusEventTimeout = @"timeout";
+
+// Internal events - incoming
+NSString * const PrimusEventIncomingOpen = @"incoming::open";
+NSString * const PrimusEventIncomingData = @"incoming::data";
+NSString * const PrimusEventIncomingPong = @"incoming::pong";
+NSString * const PrimusEventIncomingEnd = @"incoming::end";
+NSString * const PrimusEventIncomingError = @"incoming::error";
+
+// Internal events - outgoing
+NSString * const PrimusEventOutgoingOpen = @"outgoing::open";
+NSString * const PrimusEventOutgoingData = @"outgoing::data";
+NSString * const PrimusEventOutgoingPing = @"outgoing::ping";
+NSString * const PrimusEventOutgoingEnd = @"outgoing::end";
+NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
+
 @implementation Primus
 
 @synthesize request = _request;
 @synthesize options = _options;
+@synthesize primusDelegate = _primusDelegate;
 
 - (id)init
 {
@@ -80,123 +107,7 @@
  */
 - (void)bindRealtimeEvents
 {
-    [self on:@"outgoing::open" listener:^{
-        _readyState = kPrimusReadyStateOpening;
-        [self timeout];
-    }];
-
-    [self on:@"outgoing::reconnect" listener:^{
-        [self timeout];
-    }];
-
-    [self on:@"incoming::open" listener:^{
-        _readyState = kPrimusReadyStateOpen;
-
-        _attemptOptions = nil;
-
-        [_timers.ping invalidate];
-        _timers.ping = nil;
-
-        [_timers.pong invalidate];
-        _timers.pong = nil;
-
-        [self emit:@"open"];
-
-        [self heartbeat];
-
-        if (_buffer.count > 0) {
-            for (id data in _buffer) {
-                [self write:data];
-            }
-
-            [_buffer removeAllObjects];
-        }
-    }];
-
-    [self on:@"incoming::pong" listener:^(NSNumber *time) {
-        _online = YES;
-
-        [_timers.pong invalidate];
-        _timers.pong = nil;
-
-        [self heartbeat];
-    }];
-
-    [self on:@"incoming::error" listener:^(NSError *error) {
-        [self emit:@"error", error];
-
-        if (_attemptOptions.attempt) {
-            return [self reconnect];
-        }
-
-        if (_timers.connect) {
-            if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyTimeout)]) {
-                [self reconnect];
-            } else {
-                [self end];
-            }
-        }
-    }];
-
-    [self on:@"incoming::data" listener:^(id raw) {
-        [self.parser decode:raw callback:^(NSError *error, id data) {
-            if (error) {
-                return [self emit:@"error", error];
-            }
-
-            if ([data isKindOfClass:[NSString class]]) {
-                if ([data isEqualToString:@"primus::server::close"]) {
-                    return [self end];
-                }
-
-                if ([data hasPrefix:@"primus::pong::"]) {
-                    return [self emit:@"incoming::pong", [data substringFromIndex:14]];
-                }
-
-                if ([data hasPrefix:@"primus::id::"]) {
-                    return [self emit:@"incoming::id", [data substringFromIndex:12]];
-                }
-            }
-
-            for (PrimusTransformCallback transform in self.transformers.incoming) {
-                NSMutableDictionary *packet = [@{ @"data": data } mutableCopy];
-
-                if (NO == transform(packet)) {
-                    // When false is returned by an incoming transformer it means that's
-                    // being handled by the transformer and we should not emit the `data`
-                    // event.
-
-                    return;
-                }
-
-                data = packet[@"data"];
-            }
-
-            [self emit:@"data", data, raw];
-        }];
-    }];
-
-    [self on:@"incoming::end" listener:^(NSString *intentional) {
-        PrimusReadyState readyState = self.readyState;
-
-        _readyState = kPrimusReadyStateClosed;
-
-        if (kPrimusReadyStateOpen != readyState) {
-            return;
-        }
-
-        [_timers clearAll];
-
-        if ([intentional isEqualToString:@"primus::server::close"]) {
-            return [self emit:@"end"];
-        }
-
-        [self emit:@"close"];
-
-        if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyDisconnect)]) {
-            [self reconnect];
-        }
-    }];
+    //
 }
 
 /**
@@ -212,7 +123,8 @@
 
             self->_online = YES;
 
-            [self emit:@"online"];
+            [self.primusDelegate onEvent:PrimusEventOnline
+                                userInfo:nil];
 
             if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
                 [self reconnect];
@@ -226,7 +138,8 @@
 
             self->_online = NO;
 
-            [self emit:@"offline"];
+            [self.primusDelegate onEvent:PrimusEventOffline
+                                userInfo:nil];
 
             [self end];
         });
@@ -373,7 +286,8 @@
 
     _plugins = [NSDictionary dictionaryWithDictionary:plugins];
 
-    [self emit:@"outgoing::open"];
+    [self.transformer onEvent:PrimusEventOutgoingOpen
+                     userInfo:nil];
 }
 
 /**
@@ -404,12 +318,17 @@
         data = packet[@"data"];
     }
 
-    [self.parser encode:data callback:^(NSError *error, id packet) {
+    [self.parser encode:data callback:^(NSError *error, id data) {
         if (error) {
-            return [self emit:@"error", error];
+            return [self.primusDelegate onEvent:PrimusEventError userInfo:@{
+                                                                            @"error": error
+                                                                            }];
         }
 
-        [self emit:@"outgoing::data", packet];
+        [self.transformer onEvent:PrimusEventOutgoingData
+                         userInfo:@{
+                                    @"data": data
+                                    }];
     }];
 
     return YES;
@@ -452,8 +371,10 @@
 
         _online = NO;
 
-        [self emit:@"offline"];
-        [self emit:@"incoming::end", nil];
+        [self.primusDelegate onEvent:PrimusEventOffline
+                            userInfo:nil];
+        [self.primusDelegate onEvent:PrimusEventIncomingEnd
+                            userInfo:nil];
     };
 
     __block id ping = ^{
@@ -461,7 +382,8 @@
         _timers.ping = nil;
 
         [self write:[NSString stringWithFormat:@"primus::ping::%f", [[NSDate date] timeIntervalSince1970]]];
-        [self emit:@"outgoing::ping"];
+        [self.primusDelegate onEvent:PrimusEventOutgoingPing
+                            userInfo:nil];
 
         _timers.pong = [NSTimer scheduledTimerWithTimeInterval:self.options.pong block:pong repeats:NO];
     };
@@ -482,7 +404,8 @@
             return;
         }
 
-        [self emit:@"timeout"];
+        [self.primusDelegate onEvent:PrimusEventTimeout
+                            userInfo:nil];
 
         if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyTimeout)]) {
             [self reconnect];
@@ -519,7 +442,13 @@
         ? MIN(round((drand48() + 1) * options.minDelay * pow(options.factor, options.attempt)), options.maxDelay)
         : options.minDelay;
 
-    [self emit:@"reconnecting", options];
+    NSMutableDictionary *userInfo = [@{} mutableCopy];
+
+    if (options)
+        userInfo[@"options"] = options;
+
+    [self.primusDelegate onEvent:PrimusEventReconnecting
+                        userInfo:userInfo];
 
     options.timeout = ceilf(options.timeout);
 
@@ -545,12 +474,18 @@
         if (error) {
             _attemptOptions = nil;
 
-            return [self emit:@"end"];
+            return [self.primusDelegate onEvent:PrimusEventEnd
+                                       userInfo:nil];
         }
 
         // Try to re-open the connection again.
-        [self emit:@"reconnect", options];
-        [self emit:@"outgoing::reconnect"];
+        [self.primusDelegate onEvent:PrimusEventReconnect
+                            userInfo:@{
+                                       @"options": options
+                                       }];
+
+        [self.transformer onEvent:PrimusEventOutgoingReconnect
+                            userInfo:nil];
     } options:_attemptOptions];
 }
 
@@ -582,9 +517,12 @@
 
     [_timers clearAll];
 
-    [self emit:@"outgoing::end"];
-    [self emit:@"close"];
-    [self emit:@"end"];
+    [self.transformer onEvent:PrimusEventOutgoingEnd
+                     userInfo:nil];
+    [self.primusDelegate onEvent:PrimusEventClose
+                        userInfo:nil];
+    [self.primusDelegate onEvent:PrimusEventEnd
+                        userInfo:nil];
 }
 
 /**
@@ -607,6 +545,145 @@
         [self.transformers.outgoing addObject:fn];
 
         return;
+    }
+}
+
+- (void)onEvent:(NSString *)event userInfo:(NSDictionary *)userInfo
+{
+    if ([event isEqualToString:PrimusEventOutgoingOpen]) {
+        _readyState = kPrimusReadyStateOpening;
+        [self timeout];
+    } else if ([event isEqualToString:PrimusEventOutgoingReconnect]) {
+        [self timeout];
+    } else if ([event isEqualToString:PrimusEventIncomingOpen]) {
+        _readyState = kPrimusReadyStateOpen;
+
+        _attemptOptions = nil;
+
+        [_timers.ping invalidate];
+        _timers.ping = nil;
+
+        [_timers.pong invalidate];
+        _timers.pong = nil;
+
+        [self.primusDelegate onEvent:PrimusEventOpen
+                            userInfo:nil];
+
+        [self heartbeat];
+
+        if (_buffer.count > 0) {
+            for (id data in _buffer) {
+                [self write:data];
+            }
+
+            [_buffer removeAllObjects];
+        }
+    } else if ([event isEqualToString:PrimusEventIncomingPong]) {
+        __unused NSNumber *time = userInfo[@"time"];
+
+        _online = YES;
+
+        [_timers.pong invalidate];
+        _timers.pong = nil;
+
+        [self heartbeat];
+    } else if ([event isEqualToString:PrimusEventIncomingError]) {
+        NSError *error = userInfo[@"error"];
+
+        [self.primusDelegate onEvent:PrimusEventError
+                            userInfo:@{
+                                       @"error": error
+                                       }];
+
+        if (_attemptOptions.attempt) {
+            return [self reconnect];
+        }
+
+        if (_timers.connect) {
+            if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyTimeout)]) {
+                [self reconnect];
+            } else {
+                [self end];
+            }
+        }
+    } else if ([event isEqualToString:PrimusEventIncomingData]) {
+        id raw = userInfo[@"raw"];
+
+        [self.parser decode:raw callback:^(NSError *error, id data) {
+            if (error) {
+                return [self.primusDelegate onEvent:PrimusEventError
+                                           userInfo:@{
+                                                      @"error": error
+                                                      }];
+            }
+
+            if ([data isKindOfClass:[NSString class]]) {
+                if ([data isEqualToString:@"primus::server::close"]) {
+                    return [self end];
+                }
+
+                if ([data hasPrefix:@"primus::pong::"]) {
+                    NSMutableDictionary *userInfo = [@{} mutableCopy];
+
+                    if (data)
+                        userInfo[@"time"] = [data substringFromIndex:14];
+
+                    return [self onEvent:PrimusEventIncomingPong
+                                userInfo:userInfo];
+                }
+
+                if ([data hasPrefix:@"primus::id::"]) {
+                    return [self emit:@"incoming::id", [data substringFromIndex:12]];
+                }
+            }
+
+            for (PrimusTransformCallback transform in self.transformers.incoming) {
+                NSMutableDictionary *packet = [@{ @"data": data } mutableCopy];
+
+                if (NO == transform(packet)) {
+                    // When false is returned by an incoming transformer it means that's
+                    // being handled by the transformer and we should not emit the `data`
+                    // event.
+
+                    return;
+                }
+
+                data = packet[@"data"];
+            }
+
+            NSMutableDictionary *userInfo = [@{} mutableCopy];
+            if (data)
+                userInfo[@"data"] = data;
+            if (raw)
+                userInfo[@"raw"] = raw;
+
+            [self.primusDelegate onEvent:PrimusEventData
+                                userInfo:userInfo];
+        }];
+    } else if ([event isEqualToString:PrimusEventIncomingEnd]) {
+        NSString *intentional = userInfo[@"intentional"];
+
+        PrimusReadyState readyState = self.readyState;
+
+        _readyState = kPrimusReadyStateClosed;
+
+        if (kPrimusReadyStateOpen != readyState) {
+            return;
+        }
+
+        [_timers clearAll];
+
+        if ([intentional isEqualToString:@"primus::server::close"]) {
+            return [self.primusDelegate onEvent:PrimusEventEnd
+                                       userInfo:nil];
+        }
+
+        [self.primusDelegate onEvent:PrimusEventClose
+                            userInfo:nil];
+
+        if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyDisconnect)]) {
+            [self reconnect];
+        }
     }
 }
 

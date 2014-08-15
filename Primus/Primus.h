@@ -18,6 +18,32 @@
 #import "PrimusTransformers.h"
 #import "PrimusProtocol.h"
 
+// Public events
+extern NSString * const PrimusEventReconnect;
+extern NSString * const PrimusEventReconnecting;
+extern NSString * const PrimusEventOnline;
+extern NSString * const PrimusEventOffline;
+extern NSString * const PrimusEventOpen;
+extern NSString * const PrimusEventError;
+extern NSString * const PrimusEventData;
+extern NSString * const PrimusEventEnd;
+extern NSString * const PrimusEventClose;
+extern NSString * const PrimusEventTimeout;
+
+// Internal events - incoming
+extern NSString * const PrimusEventIncomingOpen;
+extern NSString * const PrimusEventIncomingData;
+extern NSString * const PrimusEventIncomingPong;
+extern NSString * const PrimusEventIncomingEnd;
+extern NSString * const PrimusEventIncomingError;
+
+// Internal events - outgoing
+extern NSString * const PrimusEventOutgoingOpen;
+extern NSString * const PrimusEventOutgoingData;
+extern NSString * const PrimusEventOutgoingPing;
+extern NSString * const PrimusEventOutgoingEnd;
+extern NSString * const PrimusEventOutgoingReconnect;
+
 @interface Primus : NSObject<PrimusProtocol>
 {
     NSUInteger _timeout;
