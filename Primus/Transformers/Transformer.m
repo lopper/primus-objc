@@ -21,4 +21,9 @@
     return self;
 }
 
+- (void)onEvent:(NSString *)event userInfo:(NSDictionary *)userInfo
+{
+    NSAssert(NO, @"Subclass MUST override");
+}
+
 @end
