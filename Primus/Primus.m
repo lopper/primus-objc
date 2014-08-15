@@ -123,8 +123,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
             self->_online = YES;
 
-            [self.primusDelegate onEvent:PrimusEventOnline
-                                userInfo:nil];
+            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [self.primusDelegate onEvent:PrimusEventOnline
+                                    userInfo:nil];
 
             if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
                 [self reconnect];
@@ -138,8 +139,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
             self->_online = NO;
 
-            [self.primusDelegate onEvent:PrimusEventOffline
-                                userInfo:nil];
+            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [self.primusDelegate onEvent:PrimusEventOffline
+                                    userInfo:nil];
 
             [self end];
         });
@@ -286,8 +288,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
     _plugins = [NSDictionary dictionaryWithDictionary:plugins];
 
-    [self.transformer onEvent:PrimusEventOutgoingOpen
-                     userInfo:nil];
+    if ([self.transformer respondsToSelector:@selector(onEvent:userInfo:)])
+        [self.transformer onEvent:PrimusEventOutgoingOpen
+                         userInfo:nil];
 }
 
 /**
@@ -319,6 +322,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
     }
 
     [self.parser encode:data callback:^(NSError *error, id data) {
+        if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            return;
+
         if (error) {
             return [self.primusDelegate onEvent:PrimusEventError userInfo:@{
                                                                             @"error": error
@@ -371,6 +377,8 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
         _online = NO;
 
+        if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            return;
         [self.primusDelegate onEvent:PrimusEventOffline
                             userInfo:nil];
         [self.primusDelegate onEvent:PrimusEventIncomingEnd
@@ -382,8 +390,10 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         _timers.ping = nil;
 
         [self write:[NSString stringWithFormat:@"primus::ping::%f", [[NSDate date] timeIntervalSince1970]]];
-        [self.primusDelegate onEvent:PrimusEventOutgoingPing
-                            userInfo:nil];
+
+        if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.primusDelegate onEvent:PrimusEventOutgoingPing
+                                userInfo:nil];
 
         _timers.pong = [NSTimer scheduledTimerWithTimeInterval:self.options.pong block:pong repeats:NO];
     };
@@ -404,8 +414,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
             return;
         }
 
-        [self.primusDelegate onEvent:PrimusEventTimeout
-                            userInfo:nil];
+        if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.primusDelegate onEvent:PrimusEventTimeout
+                                userInfo:nil];
 
         if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyTimeout)]) {
             [self reconnect];
@@ -447,8 +458,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
     if (options)
         userInfo[@"options"] = options;
 
-    [self.primusDelegate onEvent:PrimusEventReconnecting
-                        userInfo:userInfo];
+    if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+        [self.primusDelegate onEvent:PrimusEventReconnecting
+                            userInfo:userInfo];
 
     options.timeout = ceilf(options.timeout);
 
@@ -474,18 +486,23 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         if (error) {
             _attemptOptions = nil;
 
-            return [self.primusDelegate onEvent:PrimusEventEnd
-                                       userInfo:nil];
+            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [self.primusDelegate onEvent:PrimusEventEnd
+                                    userInfo:nil];
+
+            return;
         }
 
         // Try to re-open the connection again.
-        [self.primusDelegate onEvent:PrimusEventReconnect
-                            userInfo:@{
-                                       @"options": options
-                                       }];
+        if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.primusDelegate onEvent:PrimusEventReconnect
+                                userInfo:@{
+                                           @"options": options
+                                           }];
 
-        [self.transformer onEvent:PrimusEventOutgoingReconnect
-                            userInfo:nil];
+        if ([self.transformer respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.transformer onEvent:PrimusEventOutgoingReconnect
+                                userInfo:nil];
     } options:_attemptOptions];
 }
 
@@ -517,12 +534,15 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
     [_timers clearAll];
 
-    [self.transformer onEvent:PrimusEventOutgoingEnd
-                     userInfo:nil];
-    [self.primusDelegate onEvent:PrimusEventClose
-                        userInfo:nil];
-    [self.primusDelegate onEvent:PrimusEventEnd
-                        userInfo:nil];
+    if ([self.transformer respondsToSelector:@selector(onEvent:userInfo:)])
+        [self.transformer onEvent:PrimusEventOutgoingEnd
+                         userInfo:nil];
+    if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)]) {
+        [self.primusDelegate onEvent:PrimusEventClose
+                            userInfo:nil];
+        [self.primusDelegate onEvent:PrimusEventEnd
+                            userInfo:nil];
+    }
 }
 
 /**
@@ -566,8 +586,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         [_timers.pong invalidate];
         _timers.pong = nil;
 
-        [self.primusDelegate onEvent:PrimusEventOpen
-                            userInfo:nil];
+        if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.primusDelegate onEvent:PrimusEventOpen
+                                userInfo:nil];
 
         [self heartbeat];
 
@@ -611,10 +632,12 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
         [self.parser decode:raw callback:^(NSError *error, id data) {
             if (error) {
-                return [self.primusDelegate onEvent:PrimusEventError
-                                           userInfo:@{
-                                                      @"error": error
-                                                      }];
+                if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                    [self.primusDelegate onEvent:PrimusEventError
+                                        userInfo:@{
+                                                   @"error": error
+                                                   }];
+                return;
             }
 
             if ([data isKindOfClass:[NSString class]]) {
@@ -657,8 +680,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
             if (raw)
                 userInfo[@"raw"] = raw;
 
-            [self.primusDelegate onEvent:PrimusEventData
-                                userInfo:userInfo];
+            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [self.primusDelegate onEvent:PrimusEventData
+                                    userInfo:userInfo];
         }];
     } else if ([event isEqualToString:PrimusEventIncomingEnd]) {
         NSString *intentional = userInfo[@"intentional"];
@@ -674,12 +698,15 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         [_timers clearAll];
 
         if ([intentional isEqualToString:@"primus::server::close"]) {
-            return [self.primusDelegate onEvent:PrimusEventEnd
-                                       userInfo:nil];
+            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [self.primusDelegate onEvent:PrimusEventEnd
+                                    userInfo:nil];
+            return;
         }
 
-        [self.primusDelegate onEvent:PrimusEventClose
-                            userInfo:nil];
+        if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+            [self.primusDelegate onEvent:PrimusEventClose
+                                userInfo:nil];
 
         if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyDisconnect)]) {
             [self reconnect];
