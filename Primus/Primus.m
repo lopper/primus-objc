@@ -15,6 +15,11 @@
 
 #import "Primus.h"
 
+typedef NS_ENUM(NSUInteger, PrimusEventPublishType) {
+    PrimusEventPublishTypeEvent = 0,
+    PrimusEventPublishTypeAcknowledgment = 1
+};
+
 // Public events
 NSString * const PrimusEventReconnect = @"reconnect";
 NSString * const PrimusEventReconnecting = @"reconnecting";
@@ -321,7 +326,12 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         data = packet[@"data"];
     }
 
-    [self.parser encode:data callback:^(NSError *error, id data) {
+    NSDictionary *wrappedData = @{
+                                  @"data": data,
+                                  @"type": @(PrimusEventPublishTypeEvent)
+                                  };
+
+    [self.parser encode:wrappedData callback:^(NSError *error, id data) {
         if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
             return;
 
