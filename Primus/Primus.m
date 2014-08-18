@@ -330,8 +330,11 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
                                   @"data": data,
                                   @"type": @(PrimusEventPublishTypeEvent)
                                   };
+    
+    bool isPrimusEvent = [data isKindOfClass:[NSString class]] && [data hasPrefix:@"primus::"];
 
-    [self.parser encode:wrappedData callback:^(NSError *error, id data) {
+
+    [self.parser encode:(isPrimusEvent ? data : wrappedData) callback:^(NSError *error, id data) {
         if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
             return;
 
