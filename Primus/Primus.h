@@ -64,6 +64,7 @@ extern NSString * const PrimusEventOutgoingReconnect;
 @property (nonatomic) id<TransformerProtocol> transformer;
 @property (nonatomic) id<ParserProtocol> parser;
 
+- (void)forceReconnect;
 - (void)reconnect;
 
 @end

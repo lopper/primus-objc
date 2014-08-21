@@ -487,6 +487,29 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
     } repeats:NO];
 }
 
+- (void)forceReconnect
+{
+    _timers.reconnect = nil;
+
+    // Try to re-use the existing attempt.
+    _attemptOptions = _attemptOptions ?: [_reconnectOptions copy];
+
+    // Try to re-open the connection again.
+    if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+        [self.primusDelegate onEvent:PrimusEventReconnect
+                            userInfo:@{
+                                       @"options": _attemptOptions
+                                       }];
+
+    if ([self.transformer respondsToSelector:@selector(onEvent:userInfo:)])
+        [self.transformer onEvent:PrimusEventOutgoingReconnect
+                         userInfo:nil];
+
+
+    _attemptOptions.attempt++;
+    _attemptOptions.backoff = NO;
+}
+
 /**
  * Start a new reconnect procedure.
  */
