@@ -395,7 +395,7 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         [_timers.pong invalidate];
         _timers.pong = nil;
 
-        if (self.online) {
+        if (!self.online) {
             return;
         }
 
