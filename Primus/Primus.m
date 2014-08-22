@@ -399,14 +399,16 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
             return;
         }
 
-        _online = NO;
+        [self heartbeat];
 
-        if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
-            return;
-        [self.primusDelegate onEvent:PrimusEventOffline
-                            userInfo:nil];
-        [self.primusDelegate onEvent:PrimusEventIncomingEnd
-                            userInfo:nil];
+//        _online = NO;
+//
+//        if (![self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+//            return;
+//        [self.primusDelegate onEvent:PrimusEventOffline
+//                            userInfo:nil];
+//        [self.primusDelegate onEvent:PrimusEventIncomingEnd
+//                            userInfo:nil];
     };
 
     __block id ping = ^{
@@ -421,6 +423,9 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
         _timers.pong = [NSTimer scheduledTimerWithTimeInterval:self.options.pong block:pong repeats:NO];
     };
+
+    [_timers.ping invalidate];
+    _timers.ping = nil;
 
     _timers.ping = [NSTimer scheduledTimerWithTimeInterval:self.options.ping block:ping repeats:NO];
 }
