@@ -46,6 +46,12 @@ NSString * const PrimusEventOutgoingPing = @"outgoing::ping";
 NSString * const PrimusEventOutgoingEnd = @"outgoing::end";
 NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
+@interface Primus ()
+
+@property (nonatomic, assign) BOOL unreachablePending;
+
+@end
+
 @implementation Primus
 
 @synthesize request = _request;
@@ -120,35 +126,40 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
  */
 - (void)bindNetworkEvents
 {
-    @weakify(self);
+    __weak typeof(self) weakSelf = self;
 
     _reach.reachableBlock = ^(Reachability *reach) {
+        weakSelf.unreachablePending = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
-            @strongify(self);
+            __strong typeof(weakSelf) strongSelf = weakSelf;
 
-            self->_online = YES;
+            strongSelf->_online = YES;
 
-            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
-                [self.primusDelegate onEvent:PrimusEventOnline
-                                    userInfo:nil];
+            if ([strongSelf.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [strongSelf.primusDelegate onEvent:PrimusEventOnline
+                                          userInfo:nil];
 
-            if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
-                [self reconnect];
+            if ([strongSelf.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
+                [strongSelf reconnect];
             }
         });
     };
 
     _reach.unreachableBlock = ^(Reachability *reach) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            @strongify(self);
+        weakSelf.unreachablePending = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
 
-            self->_online = NO;
+            if (!strongSelf.unreachablePending)
+                return;
 
-            if ([self.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
-                [self.primusDelegate onEvent:PrimusEventOffline
-                                    userInfo:nil];
+            strongSelf->_online = NO;
 
-            [self end];
+            if ([strongSelf.primusDelegate respondsToSelector:@selector(onEvent:userInfo:)])
+                [strongSelf.primusDelegate onEvent:PrimusEventOffline
+                                          userInfo:nil];
+
+            [strongSelf end];
         });
     };
 
