@@ -49,6 +49,7 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 @interface Primus ()
 
 @property (nonatomic, assign) BOOL unreachablePending;
+@property (nonatomic, assign) BOOL keepAliveHandlerSet;
 
 @end
 
@@ -181,10 +182,16 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         [UIApplication.sharedApplication setKeepAliveTimeout:600 handler:^{
             [_timers.ping fire];
         }];
+
+        self.keepAliveHandlerSet = YES;
     }];
 
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
+        if (!self.keepAliveHandlerSet)
+            return;
+
         [UIApplication.sharedApplication clearKeepAliveTimeout];
+        self.keepAliveHandlerSet = NO;
     }];
 #endif
 }
