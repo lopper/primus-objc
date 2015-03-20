@@ -442,9 +442,14 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
  */
 - (void)timeout
 {
-    _timers.connect = [NSTimer scheduledTimerWithTimeInterval:self.options.timeout block:^{
+    
+    dispatch_block_t stop = ^{
         [_timers.connect invalidate];
         _timers.connect = nil;
+    };
+    
+    _timers.connect = [NSTimer scheduledTimerWithTimeInterval:self.options.timeout block:^{
+        stop();
 
         if (kPrimusReadyStateOpen == self.readyState) {
             return;
