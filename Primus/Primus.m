@@ -53,6 +53,8 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
 @end
 
+NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
+
 @implementation Primus
 
 @synthesize request = _request;
@@ -179,7 +181,7 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
         }
 
         // Send a keep-alive ping every 10 minutes while in background
-        [UIApplication.sharedApplication setKeepAliveTimeout:600 handler:^{
+        [UIApplication.sharedApplication setKeepAliveTimeout:kBackgroundFetchIntervalMinimum handler:^{
             [_timers.ping fire];
         }];
 
@@ -187,10 +189,25 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
     }];
 
     [NSNotificationCenter.defaultCenter addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
-        if (!self.keepAliveHandlerSet)
+        
+        
+        // Clear the keep-alive ping after resuming from background
+        if (YES == self.options.stayConnectedInBackground) {
+            [UIApplication.sharedApplication clearKeepAliveTimeout];
+            
             return;
-
-        [UIApplication.sharedApplication clearKeepAliveTimeout];
+        }
+        
+        // Do not reconnect if the connection was previously closed
+        if (kPrimusReadyStateOpen != self.readyState) {
+            return;
+        }
+        
+        // Reconnect to the server after resuming from background
+        if ([self.options.reconnect.strategies containsObject:@(kPrimusReconnectionStrategyOnline)]) {
+            [self reconnect];
+        }
+        
         self.keepAliveHandlerSet = NO;
     }];
 #endif
@@ -224,6 +241,12 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
 
         self.options.ping = MAX(MIN(self.options.ping, timeout / 1000.0f), 0);
     }
+
+    // If the calculated ping is smaller than the minimum allowed interval, disable background.
+    if (self.options.ping < kBackgroundFetchIntervalMinimum) {
+        self.options.stayConnectedInBackground = NO;
+    }
+
 
     // If there is no parser set, use JSON as default
     if (!parserClass) {
@@ -476,6 +499,14 @@ NSString * const PrimusEventOutgoingReconnect = @"outgoing::reconnect";
  */
 - (void)backoff:(PrimusReconnectCallback)callback options:(PrimusReconnectOptions *)options
 {
+#if __has_include(<UIKit/UIKit.h>)
+    BOOL isInactive = UIApplication.sharedApplication.applicationState != UIApplicationStateActive;
+    
+    if (isInactive && !self.options.stayConnectedInBackground) {
+        return;
+    }
+#endif
+    
     if (options.backoff) {
         return;
     }
