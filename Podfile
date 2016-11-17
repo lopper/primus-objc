@@ -9,7 +9,7 @@ pod 'libextobjc/EXTScope'
 pod 'socket.IO', '0.5.2'
 pod 'SocketRocket', '0.3.1-beta2'
 
-target :PrimusTests, :exclusive => true do
+target :PrimusTests do
     pod 'Specta'
     pod 'Expecta'
     pod 'OCMockito'
