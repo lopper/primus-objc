@@ -239,7 +239,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
             @strongify(self);
             
             if(self.unreachablePending)
-            {            
+            {
                 self->_online = NO;
 
                 [self emit:@"offline"];
@@ -324,6 +324,12 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         self.options.stayConnectedInBackground = NO;
     }
 
+    
+    // If the calculated ping is smaller than the minimum allowed interval, disable background.
+    if (self.options.ping < kBackgroundFetchIntervalMinimum) {
+        self.options.stayConnectedInBackground = NO;
+    }
+    
     // If there is no parser set, use JSON as default
     if (!parserClass) {
         parserClass = NSClassFromString(@"JSON");
@@ -553,6 +559,15 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
  */
 - (void)backoff:(PrimusReconnectCallback)callback options:(PrimusReconnectOptions *)options
 {
+    
+#if __has_include(<UIKit/UIKit.h>)
+    BOOL isInactive = UIApplication.sharedApplication.applicationState != UIApplicationStateActive;
+    
+    if (isInactive && !self.options.stayConnectedInBackground) {
+        return;
+    }
+#endif
+    
     if (options.backoff) {
         return;
     }
