@@ -14,6 +14,12 @@
 #import <objc/runtime.h>
 
 #import "Primus.h"
+@interface Primus()
+
+@property (nonatomic, assign) BOOL unreachablePending;
+
+@end
+
 
 NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
 
@@ -209,6 +215,9 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     @weakify(self);
 
     _reach.reachableBlock = ^(Reachability *reach) {
+        @strongify(self);
+        self.unreachablePending = NO;
+        @weakify(self);
         dispatch_async(dispatch_get_main_queue(), ^{
             @strongify(self);
 
@@ -223,14 +232,20 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     };
 
     _reach.unreachableBlock = ^(Reachability *reach) {
+        @strongify(self);
+        self.unreachablePending = YES;
+        @weakify(self);
         dispatch_async(dispatch_get_main_queue(), ^{
             @strongify(self);
+            
+            if(self.unreachablePending)
+            {            
+                self->_online = NO;
 
-            self->_online = NO;
+                [self emit:@"offline"];
 
-            [self emit:@"offline"];
-
-            [self end];
+                [self end];
+            }
         });
     };
 
