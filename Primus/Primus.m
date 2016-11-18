@@ -569,6 +569,20 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         options.backoff = NO;
     }];
 }
+- (void)forceReconnect
+{
+    _timers.reconnect = nil;
+    
+    // Try to re-use the existing attempt.
+    _attemptOptions = _attemptOptions ?: [_reconnectOptions copy];
+    
+    // Try to re-open the connection again.
+    [self emit:@"reconnect", _attemptOptions];
+    [self emit:@"outgoing::reconnect"];
+    
+    _attemptOptions.attempt++;
+    _attemptOptions.backoff = NO;
+}
 
 /**
  * Start a new reconnect procedure.
