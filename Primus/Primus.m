@@ -559,7 +559,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         : options.minDelay;
 
     [self emit:@"reconnecting", options];
-
+    options.timeout = ceilf(options.timeout);
     _timers.reconnect = [GCDTimer scheduledTimerWithTimeInterval:options.timeout repeats:NO block:^{
         _timers.reconnect = nil;
 
