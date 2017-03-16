@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0E1F45BA2BF240B2BD7E88A6 /* libPods-PrimusTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 696217F923984D21B38AC44D /* libPods-PrimusTests.a */; };
 		7B88A21B8E034D248EAEB977 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CBC4DD3581504004B2A19645 /* libPods.a */; };
+		9BF482C61E7B4B6B00DE7919 /* FP_SRWebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 9BF482C41E7B4B6B00DE7919 /* FP_SRWebSocket.h */; };
+		9BF482C71E7B4B6B00DE7919 /* FP_SRWebSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BF482C51E7B4B6B00DE7919 /* FP_SRWebSocket.m */; };
 		E500D4DD18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h in Headers */ = {isa = PBXBuildFile; fileRef = E500D4DB18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h */; };
 		E500D4DE18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m in Sources */ = {isa = PBXBuildFile; fileRef = E500D4DC18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m */; };
 		E51005BF1886BDD900A8F1F2 /* PrimusConnectOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = E51005BD1886BDD900A8F1F2 /* PrimusConnectOptions.h */; };
@@ -63,6 +65,8 @@
 		696217F923984D21B38AC44D /* libPods-PrimusTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PrimusTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7277FA3FA18740E789A9F58C /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		74A248551C9F4EEF8E00F4EE /* Pods-PrimusTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrimusTests.xcconfig"; path = "Pods/Pods-PrimusTests.xcconfig"; sourceTree = "<group>"; };
+		9BF482C41E7B4B6B00DE7919 /* FP_SRWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FP_SRWebSocket.h; sourceTree = "<group>"; };
+		9BF482C51E7B4B6B00DE7919 /* FP_SRWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FP_SRWebSocket.m; sourceTree = "<group>"; };
 		CBC4DD3581504004B2A19645 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E500D4DB18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKTRequiredObjectAndProtocolMock.h; sourceTree = "<group>"; };
 		E500D4DC18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKTRequiredObjectAndProtocolMock.m; sourceTree = "<group>"; };
@@ -142,6 +146,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9BF482C31E7B4B5B00DE7919 /* FP_SRWebSocket */ = {
+			isa = PBXGroup;
+			children = (
+				9BF482C41E7B4B6B00DE7919 /* FP_SRWebSocket.h */,
+				9BF482C51E7B4B6B00DE7919 /* FP_SRWebSocket.m */,
+			);
+			name = FP_SRWebSocket;
+			sourceTree = "<group>";
+		};
 		E500D4DA18C0CD1E001FE7CE /* Mock */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +293,7 @@
 		E5F94BDE1885B5BD00170670 /* Primus */ = {
 			isa = PBXGroup;
 			children = (
+				9BF482C31E7B4B5B00DE7919 /* FP_SRWebSocket */,
 				E5F94BDF1885B5BD00170670 /* Supporting Files */,
 				E58795691886A94300913F61 /* Core */,
 				E5F94C071885B5FE00170670 /* Parsers */,
@@ -386,6 +400,7 @@
 				E5FA210418893C8F00638647 /* SocketRocketClient.h in Headers */,
 				E59D15A518D38401006CFE49 /* SocketRocketWebSocket.h in Headers */,
 				E5682C9618B5175200F5D583 /* ParserProtocol.h in Headers */,
+				9BF482C61E7B4B6B00DE7919 /* FP_SRWebSocket.h in Headers */,
 				E51005BF1886BDD900A8F1F2 /* PrimusConnectOptions.h in Headers */,
 				E5FA210918893F1A00638647 /* Transformer.h in Headers */,
 			);
@@ -553,6 +568,7 @@
 				E58795771886A95000913F61 /* PrimusTransformers.m in Sources */,
 				E5F94C0D1885B6C600170670 /* Primus.m in Sources */,
 				E51005C51887F38400A8F1F2 /* JSON.m in Sources */,
+				9BF482C71E7B4B6B00DE7919 /* FP_SRWebSocket.m in Sources */,
 				E5F94C041885B5E900170670 /* SocketIOClient.m in Sources */,
 				E59D15A618D38401006CFE49 /* SocketRocketWebSocket.m in Sources */,
 				E5FA210A18893F1A00638647 /* Transformer.m in Sources */,

@@ -6,14 +6,12 @@
 //  Copyright (c) 2014 Seegno. All rights reserved.
 //
 
-#if __has_include(<SocketRocket/SRWebSocket.h>)
 
-#import <SocketRocket/SRWebSocket.h>
 
-@interface SocketRocketWebSocket : SRWebSocket
+#import "FP_SRWebSocket.h"
+
+@interface SocketRocketWebSocket : FP_SRWebSocket
 
 @property (nonatomic) BOOL stayConnectedInBackground;
 
 @end
-
-#endif

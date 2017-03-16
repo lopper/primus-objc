@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Seegno. All rights reserved.
 //
 
-#if __has_include(<SocketRocket/SRWebSocket.h>)
 
+#import "FP_SRWebSocket.h"
 #import "SocketRocketClient.h"
 
 typedef NS_ENUM(NSInteger, SocketRocketErrorCode) {
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, SocketRocketErrorCode) {
     }];
 
     [_primus on:@"outgoing::data" listener:^(id data) {
-        if (!_socket || SR_OPEN != _socket.readyState) {
+        if (!_socket || FP_SR_OPEN != _socket.readyState) {
             return;
         }
 
@@ -86,26 +86,26 @@ typedef NS_ENUM(NSInteger, SocketRocketErrorCode) {
     }];
 }
 
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket
+- (void)webSocketDidOpen:(FP_SRWebSocket *)webSocket
 {
     [_primus emit:@"incoming::open"];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
+- (void)webSocket:(FP_SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
 {
     [_primus emit:@"incoming::end", reason];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message
+- (void)webSocket:(FP_SRWebSocket *)webSocket didReceiveMessage:(id)message
 {
     [_primus emit:@"incoming::data", message];
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
+- (void)webSocket:(FP_SRWebSocket *)webSocket didFailWithError:(NSError *)error
 {
     [_primus emit:@"incoming::error", error];
 
-    if (_socket.readyState == SR_CLOSED) {
+    if (_socket.readyState == FP_SR_CLOSED) {
         [_primus emit:@"incoming::end", error.localizedDescription];
     }
 }
@@ -118,4 +118,3 @@ typedef NS_ENUM(NSInteger, SocketRocketErrorCode) {
 
 @end
 
-#endif
