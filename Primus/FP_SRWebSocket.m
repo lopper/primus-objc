@@ -299,7 +299,7 @@ static __strong NSData *CRLFCRLF;
         _secure = YES;
     }
     
-    _readyState = SR_CONNECTING;
+    _readyState = FP_SR_CONNECTING;
     _consumerStopped = YES;
     _webSocketVersion = 13;
     
@@ -371,7 +371,7 @@ static __strong NSData *CRLFCRLF;
 - (void)open;
 {
     assert(_url);
-    NSAssert(_readyState == SR_CONNECTING, @"Cannot call -(void)open on FP_SRWebSocket more than once");
+    NSAssert(_readyState == FP_SR_CONNECTING, @"Cannot call -(void)open on FP_SRWebSocket more than once");
 
     _selfRetain = self;
     
@@ -442,7 +442,7 @@ static __strong NSData *CRLFCRLF;
         _protocol = negotiatedProtocol;
     }
     
-    self.readyState = SR_OPEN;
+    self.readyState = FP_SR_OPEN;
     
     if (!_didFail) {
         [self _readFrameNew];
@@ -609,13 +609,13 @@ static __strong NSData *CRLFCRLF;
 {
     assert(code);
     dispatch_async(_workQueue, ^{
-        if (self.readyState == SR_CLOSING || self.readyState == SR_CLOSED) {
+        if (self.readyState == FP_SR_CLOSING || self.readyState == FP_SR_CLOSED) {
             return;
         }
         
-        BOOL wasConnecting = self.readyState == SR_CONNECTING;
+        BOOL wasConnecting = self.readyState == FP_SR_CONNECTING;
         
-        self.readyState = SR_CLOSING;
+        self.readyState = FP_SR_CLOSING;
         
         SRFastLog(@"Closing with code %d reason %@", code, reason);
         
@@ -665,7 +665,7 @@ static __strong NSData *CRLFCRLF;
 - (void)_failWithError:(NSError *)error;
 {
     dispatch_async(_workQueue, ^{
-        if (self.readyState != SR_CLOSED) {
+        if (self.readyState != FP_SR_CLOSED) {
             _failed = YES;
             [self _performDelegateBlock:^{
                 if ([self.delegate respondsToSelector:@selector(webSocket:didFailWithError:)]) {
@@ -673,7 +673,7 @@ static __strong NSData *CRLFCRLF;
                 }
             }];
 
-            self.readyState = SR_CLOSED;
+            self.readyState = FP_SR_CLOSED;
             [self _scheduleCleanup];
 
             SRFastLog(@"Failing with error %@", error.localizedDescription);
@@ -696,7 +696,7 @@ static __strong NSData *CRLFCRLF;
 
 - (void)send:(id)data;
 {
-    NSAssert(self.readyState != SR_CONNECTING, @"Invalid State: Cannot call send: until connection is open");
+    NSAssert(self.readyState != FP_SR_CONNECTING, @"Invalid State: Cannot call send: until connection is open");
     // TODO: maybe not copy this for performance
     data = [data copy];
     dispatch_async(_workQueue, ^{
@@ -714,7 +714,7 @@ static __strong NSData *CRLFCRLF;
 
 - (void)sendPing:(NSData *)data;
 {
-    NSAssert(self.readyState == SR_OPEN, @"Invalid State: Cannot call send: until connection is open");
+    NSAssert(self.readyState == FP_SR_OPEN, @"Invalid State: Cannot call send: until connection is open");
     // TODO: maybe not copy this for performance
     data = [data copy] ?: [NSData data]; // It's okay for a ping to be empty
     dispatch_async(_workQueue, ^{
@@ -816,7 +816,7 @@ static inline BOOL closeCodeIsValid(int closeCode) {
     
     [self assertOnWorkQueue];
     
-    if (self.readyState == SR_OPEN) {
+    if (self.readyState == FP_SR_OPEN) {
         [self closeWithCode:1000 reason:nil];
     }
     dispatch_async(_workQueue, ^{
@@ -882,7 +882,7 @@ static inline BOOL closeCodeIsValid(int closeCode) {
 {
     assert(frame_header.opcode != 0);
     
-    if (self.readyState != SR_OPEN) {
+    if (self.readyState != FP_SR_OPEN) {
         return;
     }
     
@@ -1194,7 +1194,7 @@ static const char CRLFCRLFBytes[] = {'\r', '\n', '\r', '\n'};
     
     BOOL didWork = NO;
     
-    if (self.readyState >= SR_CLOSING) {
+    if (self.readyState >= FP_SR_CLOSING) {
         return didWork;
     }
     
@@ -1444,12 +1444,12 @@ static const size_t SRFrameHeaderOverhead = 32;
     switch (eventCode) {
         case NSStreamEventOpenCompleted: {
             SRFastLog(@"NSStreamEventOpenCompleted %@", aStream);
-            if (self.readyState >= SR_CLOSING) {
+            if (self.readyState >= FP_SR_CLOSING) {
                 return;
             }
             assert(_readBuffer);
 
-            if (self.readyState == SR_CONNECTING && aStream == _inputStream) {
+            if (self.readyState == FP_SR_CONNECTING && aStream == _inputStream) {
                 [self didConnect];
             }
             [self _pumpWriting];
@@ -1473,8 +1473,8 @@ static const size_t SRFrameHeaderOverhead = 32;
             if (aStream.streamError) {
                 [self _failWithError:aStream.streamError];
             } else {
-                if (self.readyState != SR_CLOSED) {
-                    self.readyState = SR_CLOSED;
+                if (self.readyState != FP_SR_CLOSED) {
+                    self.readyState = FP_SR_CLOSED;
                     _selfRetain = nil;
                 }
 
