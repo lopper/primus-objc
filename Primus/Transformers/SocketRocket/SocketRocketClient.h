@@ -6,17 +6,16 @@
 //  Copyright (c) 2014 Seegno. All rights reserved.
 //
 
-#if __has_include(<SocketRocket/SRWebSocket.h>)
+
 
 #import "SocketRocketWebSocket.h"
 
 #import "Transformer.h"
 
-@interface SocketRocketClient : Transformer<SRWebSocketDelegate>
+@interface SocketRocketClient : Transformer<FP_SRWebSocketDelegate>
 {
-    SocketRocketWebSocket *_socket;
+    FP_SocketRocketWebSocket *_socket;
 }
 
 @end
 
-#endif
