@@ -38,5 +38,6 @@
 @property (nonatomic) id<ParserProtocol> parser;
 
 - (void)forceReconnect;
+- (void)reconnect;
 
 @end
