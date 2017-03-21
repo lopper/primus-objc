@@ -1,6 +1,6 @@
 {
   "name": "Primus",
-  "version": "0.0.8",
+  "version": "0.0.5.1",
   "summary": "Easily switch between different real-time Objective-C frameworks without any code changes.",
   "homepage": "https://github.com/seegno/primus-objc",
   "authors": {
@@ -11,8 +11,8 @@
     "file": "LICENSE"
   },
   "source": {
-    "git": "https://github.com/seegno/primus-objc.git",
-    "tag": "0.0.8"
+    "git": "https://r3tr0but10n@bitbucket.org/funpokes/primus-objc.git",
+    "tag": "0.0.5.1"
   },
   "source_files": [
     "Primus/*.{h,m}",
@@ -22,19 +22,5 @@
   "platforms": {
     "ios": "6.0",
     "osx": "10.8"
-  },
-  "dependencies": {
-    "libextobjc/EXTScope": [
-
-    ],
-    "GCDTimer": [
-
-    ],
-    "Reachability": [
-
-    ],
-    "Emitter": [
-
-    ]
   }
 }
