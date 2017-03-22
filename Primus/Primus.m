@@ -17,7 +17,7 @@
 @interface Primus()
 
 @property (nonatomic, assign) BOOL unreachablePending;
-
+@property (nonatomic, assign) BOOL awaitingPong;
 @end
 
 
@@ -71,7 +71,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         _timers = [[PrimusTimers alloc] init];
         _reach = [Reachability reachabilityForInternetConnection];
         _online = YES;
-
+        _awaitingPong = NO;
         [self bindRealtimeEvents];
         [self bindNetworkEvents];
         [self bindSystemEvents];
@@ -123,7 +123,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
 
     [self on:@"incoming::pong" listener:^(NSNumber *time) {
         _online = YES;
-
+        _awaitingPong = NO;
         [_timers.pong invalidate];
         _timers.pong = nil;
 
@@ -479,12 +479,13 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     [_timers.pong invalidate];
     _timers.pong = nil;
 
-    if (self.online) {
+    if (self.online && !_awaitingPong) {
         return;
     }
 
     _online = NO;
-
+    _awaitingPong = NO;
+    
     [self emit:@"offline"];
     [self emit:@"incoming::end", nil];
 }
@@ -496,7 +497,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
 
     [self write:[NSString stringWithFormat:@"primus::ping::%f", [[NSDate date] timeIntervalSince1970]]];
     [self emit:@"outgoing::ping"];
-
+    _awaitingPong = YES;
     _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pong repeats:NO block:^{
         [self pong];
     }];
@@ -623,7 +624,6 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     _attemptOptions = _attemptOptions ?: [_reconnectOptions copy];
 
     [self backoff:^(NSError *error, PrimusReconnectOptions *options) {
-        
         if(self.readyState != kPrimusReadyStateClosed)
             return;
         
