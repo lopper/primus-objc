@@ -623,6 +623,10 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     _attemptOptions = _attemptOptions ?: [_reconnectOptions copy];
 
     [self backoff:^(NSError *error, PrimusReconnectOptions *options) {
+        
+        if(self.readyState != kPrimusReadyStateClosed)
+            return;
+        
         if (error) {
             _attemptOptions = nil;
 
