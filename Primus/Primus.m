@@ -497,7 +497,8 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
 
     [self write:[NSString stringWithFormat:@"primus::ping::%f", [[NSDate date] timeIntervalSince1970]]];
     [self emit:@"outgoing::ping"];
-    _awaitingPong = YES;
+    if(self.options.waitForPong)
+        _awaitingPong = YES;
     _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pong repeats:NO block:^{
         [self pong];
     }];
