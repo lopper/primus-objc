@@ -145,7 +145,6 @@
 				822A4439DC91AE4CA814AA08 /* Pods-PrimusTests.debug.xcconfig */,
 				F77495CBB522D54AA4A13E51 /* Pods-PrimusTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -444,10 +443,11 @@
 			};
 			buildConfigurationList = E5F94BD01885B5BD00170670 /* Build configuration list for PBXProject "Primus" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E5F94BCC1885B5BD00170670;
 			productRefGroup = E5F94BD61885B5BD00170670 /* Products */;
