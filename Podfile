@@ -1,10 +1,10 @@
 platform :osx, '10.9'
 inhibit_all_warnings!
 
-pod 'Emitter'
-pod 'Reachability'
-pod 'GCDTimer'
-pod 'libextobjc/EXTScope'
+pod 'Emitter', '0.0.9'
+pod 'Reachability', '3.2'
+pod 'GCDTimer', '1.1.0'
+pod 'libextobjc/EXTScope', '0.6
 
 pod 'socket.IO', '0.5.2'
 pod 'SocketRocket', '0.3.1-beta2'
