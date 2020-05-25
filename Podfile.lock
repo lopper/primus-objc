@@ -17,14 +17,14 @@ PODS:
   - Specta (1.0.7)
 
 DEPENDENCIES:
-  - Emitter
+  - Emitter (~> 0.0.9)
   - Expecta
-  - GCDTimer
-  - libextobjc/EXTScope
+  - GCDTimer (~> 1.1.0)
+  - libextobjc/EXTScope (~> 0.6)
   - OCMockito
-  - Reachability
-  - socket.IO (= 0.5.2)
-  - SocketRocket (= 0.3.1-beta2)
+  - Reachability (~> 3.2)
+  - socket.IO (~> 0.5.2)
+  - SocketRocket (~> 0.3.1-beta2)
   - Specta
 
 SPEC REPOS:
@@ -54,6 +54,6 @@ SPEC CHECKSUMS:
   SocketRocket: 7284ab9370a06c99aba92b2fe3a32aedd0f9a6fa
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
 
-PODFILE CHECKSUM: 7ca5e356e95a5926cdb0a2ccd8f05192ee61dd3e
+PODFILE CHECKSUM: 9aa21483732d755d5bd455505f75a83414be23ff
 
 COCOAPODS: 1.8.4
