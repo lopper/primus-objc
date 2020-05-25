@@ -120,7 +120,16 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
             [_buffer removeAllObjects];
         }
     }];
+    [self on:@"incoming::ping" listener:^(NSNumber *time) {
+        _online = YES;
+        
+        // for primus 7.3.4
+        // should send a pong to the server with the current time.
+        [_timers.pong invalidate];
+        _timers.pong = nil;
 
+        [self startHeartbeatNew];
+    }];
     [self on:@"incoming::pong" listener:^(NSNumber *time) {
         _online = YES;
 
@@ -159,6 +168,10 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
 
                 if ([data hasPrefix:@"primus::pong::"]) {
                     return [self emit:@"incoming::pong", [data substringFromIndex:14]];
+                }
+                
+                if ([data hasPrefix:@"primus::ping::"]) {
+                    return [self emit:@"incoming::ping", [data substringFromIndex:14]];
                 }
 
                 if ([data hasPrefix:@"primus::id::"]) {
@@ -489,6 +502,19 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     [self emit:@"incoming::end", nil];
 }
 
+
+- (void)pingNew:(NSTimeInterval)time
+{
+
+
+    [self write:[NSString stringWithFormat:@"primus::ping::%f", time];
+    [self emit:@"outgoing::ping"];
+
+     _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pingTimeout repeats:NO block:^{
+        [self pong];
+    }];
+}
+
 - (void)ping
 {
     [_timers.ping invalidate];
@@ -507,6 +533,21 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
  * connected and our internet connection didn't drop. We cannot use server side
  * heartbeats for this unfortunately.
  */
+    
+- (void)startHeartbeatNew:(NSTimeInterval)time
+ {
+     if (! self.options.pingTimeout]) {
+         return;
+     }
+
+    if(_timers.ping != nil){
+        [_timers.ping invalidate];
+      _timers.ping = nil;
+    }
+     _timers.ping = [GCDTimer scheduledTimerWithTimeInterval:0 repeats:NO block:^{
+         [self pingNew:time];
+     }];
+}
 - (void)startHeartbeat
 {
     if (! self.options.ping) {
