@@ -14,6 +14,7 @@
 @property (nonatomic) NSArray *strategy;                 // Default reconnect strategies
 @property (nonatomic) NSTimeInterval timeout;            // Connection timeout duration
 @property (nonatomic) NSTimeInterval ping;               // Heartbeat ping interval
+@property (nonatomic) NSTimeInterval pingTimeout;        // Max time to wait for a server ping
 @property (nonatomic) NSTimeInterval pong;               // Heartbeat pong response timeout.
 @property (nonatomic) BOOL autodetect;                   // Autodetect transformer and parser
 @property (nonatomic) BOOL manual;                       // Manual connection

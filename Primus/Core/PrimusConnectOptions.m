@@ -35,6 +35,7 @@
         _timeout = 10;
         _ping = 25;
         _pong = 10;
+        _pingTimeout = 45;
         _autodetect = YES;
         _manual = NO;
         _stayConnectedInBackground = [[NSBundle.mainBundle objectForInfoDictionaryKey:@"UIBackgroundModes"] containsObject:@"voip"];
