@@ -496,24 +496,15 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         return;
     }
 
-    _online = NO;
-    _awaitingPong = NO;
-    
-    [self emit:@"offline"];
-    [self emit:@"incoming::end", nil];
+    [self close];
 }
 
+- (void)close {
+    _online = NO;
+    _awaitingPong = NO;
 
-- (void)pingNew:(NSTimeInterval)time
-{
-
-
-    [self write:[NSString stringWithFormat:@"primus::ping::%f", time]];
-    [self emit:@"outgoing::ping"];
-
-     _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pingTimeout repeats:NO block:^{
-        [self pong];
-    }];
+    [self emit:@"offline"];
+    [self emit:@"incoming::end", nil];
 }
 
 - (void)ping
@@ -525,7 +516,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
     [self emit:@"outgoing::ping"];
     if(self.options.waitForPong)
         _awaitingPong = YES;
-    _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pong repeats:NO block:^{
+        _timers.pong = [GCDTimer scheduledTimerWithTimeInterval:self.options.pong repeats:NO block:^{
         [self pong];
     }];
 }
@@ -546,8 +537,19 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         [_timers.ping invalidate];
       _timers.ping = nil;
     }
-     _timers.ping = [GCDTimer scheduledTimerWithTimeInterval:0 repeats:NO block:^{
-         [self pingNew:time];
+     @weakify(self)
+     [GCDTimer scheduledTimerWithTimeInterval:0 repeats:NO block:^{
+         @strongify(self)
+         [self write:[NSString stringWithFormat:@"primus::pong::%f", time]];
+         [self emit:@"outgoing::pong"];
+         
+         @weakify(self)
+         // timeout if we do not receieve pint in time
+         _timers.ping = [GCDTimer scheduledTimerWithTimeInterval:self.options.pingTimeout repeats:NO block:^{
+             @strongify(self)
+             // this can close the connection
+             [self close];
+         }];
      }];
 }
 - (void)startHeartbeat
