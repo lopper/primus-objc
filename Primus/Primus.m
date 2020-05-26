@@ -128,7 +128,7 @@ NSTimeInterval const kBackgroundFetchIntervalMinimum = 600;
         [_timers.pong invalidate];
         _timers.pong = nil;
 
-        [self startHeartbeatNew];
+        [self startHeartbeatNew:[time doubleValue]];
     }];
     [self on:@"incoming::pong" listener:^(NSNumber *time) {
         _online = YES;
