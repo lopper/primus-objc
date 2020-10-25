@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B8C39E91382598C77CFB0AD /* Pods_Primus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 676E3F536ADD4431426C4E30 /* Pods_Primus.framework */; };
+		266E5B67CE4EBCFD0F40FEE6 /* Pods_PrimusTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A98378251BDA7EA3BAF1488 /* Pods_PrimusTests.framework */; };
 		642EDD6519C70EA9000DB6D6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 642EDD6419C70EA9000DB6D6 /* XCTest.framework */; };
 		E500D4DD18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h in Headers */ = {isa = PBXBuildFile; fileRef = E500D4DB18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h */; };
 		E500D4DE18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m in Sources */ = {isa = PBXBuildFile; fileRef = E500D4DC18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m */; };
@@ -58,7 +60,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A85550B153B04E6CFCD3F97 /* Pods-Primus.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Primus.debug.xcconfig"; path = "Target Support Files/Pods-Primus/Pods-Primus.debug.xcconfig"; sourceTree = "<group>"; };
+		0C26392C8AEC79B379A32926 /* Pods-PrimusTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrimusTests.debug.xcconfig"; path = "Target Support Files/Pods-PrimusTests/Pods-PrimusTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4A98378251BDA7EA3BAF1488 /* Pods_PrimusTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PrimusTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		642EDD6419C70EA9000DB6D6 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		676E3F536ADD4431426C4E30 /* Pods_Primus.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Primus.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		72AB0542B034FEFA2C9D91BF /* Pods-PrimusTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PrimusTests.release.xcconfig"; path = "Target Support Files/Pods-PrimusTests/Pods-PrimusTests.release.xcconfig"; sourceTree = "<group>"; };
+		8DF942D7E9A4FF062D472593 /* Pods-Primus.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Primus.release.xcconfig"; path = "Target Support Files/Pods-Primus/Pods-Primus.release.xcconfig"; sourceTree = "<group>"; };
 		E500D4DB18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKTRequiredObjectAndProtocolMock.h; sourceTree = "<group>"; };
 		E500D4DC18C0CD38001FE7CE /* MKTRequiredObjectAndProtocolMock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKTRequiredObjectAndProtocolMock.m; sourceTree = "<group>"; };
 		E51005BD1886BDD900A8F1F2 /* PrimusConnectOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrimusConnectOptions.h; sourceTree = "<group>"; };
@@ -118,6 +126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E5F94BD91885B5BD00170670 /* Cocoa.framework in Frameworks */,
+				0B8C39E91382598C77CFB0AD /* Pods_Primus.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,12 +137,25 @@
 				642EDD6519C70EA9000DB6D6 /* XCTest.framework in Frameworks */,
 				E5F94BEB1885B5BD00170670 /* Cocoa.framework in Frameworks */,
 				E5F94BEE1885B5BD00170670 /* Primus.dylib in Frameworks */,
+				266E5B67CE4EBCFD0F40FEE6 /* Pods_PrimusTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		401D872B1FFCA8EDD336A195 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0A85550B153B04E6CFCD3F97 /* Pods-Primus.debug.xcconfig */,
+				8DF942D7E9A4FF062D472593 /* Pods-Primus.release.xcconfig */,
+				0C26392C8AEC79B379A32926 /* Pods-PrimusTests.debug.xcconfig */,
+				72AB0542B034FEFA2C9D91BF /* Pods-PrimusTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		E500D4DA18C0CD1E001FE7CE /* Mock */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +255,7 @@
 				E5DEB04618ACF82F00EAC444 /* node_modules */,
 				E58C3F7B19869EDE00461CE7 /* Primus.podspec.json */,
 				E5DEB04218ACE5F200EAC444 /* package.json */,
+				401D872B1FFCA8EDD336A195 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -253,6 +276,8 @@
 				E5F94BDD1885B5BD00170670 /* AppKit.framework */,
 				642EDD6419C70EA9000DB6D6 /* XCTest.framework */,
 				E5F94BD81885B5BD00170670 /* Cocoa.framework */,
+				676E3F536ADD4431426C4E30 /* Pods_Primus.framework */,
+				4A98378251BDA7EA3BAF1488 /* Pods_PrimusTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -378,6 +403,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E5F94BF91885B5BD00170670 /* Build configuration list for PBXNativeTarget "Primus" */;
 			buildPhases = (
+				68196FDBC02D8B86DE06C1DF /* [CP] Check Pods Manifest.lock */,
 				E5F94BD11885B5BD00170670 /* Sources */,
 				E5F94BD21885B5BD00170670 /* Frameworks */,
 				E5F94BD31885B5BD00170670 /* Headers */,
@@ -395,10 +421,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E5F94BFC1885B5BD00170670 /* Build configuration list for PBXNativeTarget "PrimusTests" */;
 			buildPhases = (
+				D0610EDE9CCE25A3C5D6C110 /* [CP] Check Pods Manifest.lock */,
 				E5F94BE41885B5BD00170670 /* Sources */,
 				E5F94BE51885B5BD00170670 /* Frameworks */,
 				E5F94BE61885B5BD00170670 /* Resources */,
 				E5DEB03A18ABF44700EAC444 /* Headers */,
+				B93659307C4B037FBF1C1873 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -455,6 +483,77 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		68196FDBC02D8B86DE06C1DF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Primus-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B93659307C4B037FBF1C1873 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PrimusTests/Pods-PrimusTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Expecta/Expecta.framework",
+				"${BUILT_PRODUCTS_DIR}/OCHamcrest/OCHamcrest.framework",
+				"${BUILT_PRODUCTS_DIR}/OCMockito/OCMockito.framework",
+				"${BUILT_PRODUCTS_DIR}/Specta/Specta.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Expecta.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCHamcrest.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMockito.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Specta.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PrimusTests/Pods-PrimusTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D0610EDE9CCE25A3C5D6C110 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PrimusTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E5F94BD11885B5BD00170670 /* Sources */ = {
@@ -583,6 +682,7 @@
 		};
 		E5F94BFA1885B5BD00170670 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0A85550B153B04E6CFCD3F97 /* Pods-Primus.debug.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -600,6 +700,7 @@
 		};
 		E5F94BFB1885B5BD00170670 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8DF942D7E9A4FF062D472593 /* Pods-Primus.release.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -617,6 +718,7 @@
 		};
 		E5F94BFD1885B5BD00170670 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C26392C8AEC79B379A32926 /* Pods-PrimusTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Primus.dylib";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -644,6 +746,7 @@
 		};
 		E5F94BFE1885B5BD00170670 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 72AB0542B034FEFA2C9D91BF /* Pods-PrimusTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Primus.dylib";
 				COMBINE_HIDPI_IMAGES = YES;
