@@ -14,7 +14,7 @@ target 'Primus' do
 
   target 'PrimusTests' do
     inherit! :search_paths
-    pod 'Specta'
+    pod 'S pecta' 
     pod 'Expecta'
     pod 'OCMockito'
     # Pods for testing
