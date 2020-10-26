@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Seegno. All rights reserved.
 //
 
-#if __has_include(<SocketRocket/SRWebSocket.h>)
+#if __has_include(<FPSocketRocket/SRWebSocket.h>)
 
 #import "SocketRocketWebSocket.h"
 

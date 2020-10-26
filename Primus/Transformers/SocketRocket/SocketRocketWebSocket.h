@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Seegno. All rights reserved.
 //
 
-#if __has_include(<SocketRocket/SRWebSocket.h>)
+#if __has_include(<FPSocketRocket/SRWebSocket.h>)
 
-#import <SocketRocket/SRWebSocket.h>
+#import <FPSocketRocket/SRWebSocket.h>
 
 @interface SocketRocketWebSocket : SRWebSocket
 
