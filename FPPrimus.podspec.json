@@ -1,5 +1,5 @@
 {
-  "name": "Primus",
+  "name": "FPPrimus",
   "version": "0.0.5.4",
   "summary": "Easily switch between different real-time Objective-C frameworks without any code changes.",
   "homepage": "https://github.com/seegno/primus-objc",
@@ -18,17 +18,16 @@
     "Primus/*.{h,m}",
     "Primus/**/*.{h,m}"
   ],
-  "dependency" : {
+  "dependencies" : {
       "Emitter" : "0.0.9",
       "Reachability" : "3.2",
       "GCDTimer" : "1.1.0",
       "libextobjc/EXTScope" : "0.6",
-      "socket.IO" : "0.5.2",
-      "FPSocketRocket" : "0.4.1.1"
+      "FPSocketRocket" : "0.4.1.2"
   },
   "requires_arc": true,
   "platforms": {
-    "ios": "6.0",
+    "ios": "11.0",
     "osx": "10.8"
   }
 }

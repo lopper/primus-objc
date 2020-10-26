@@ -83,7 +83,7 @@
 		E587956F1886A94300913F61 /* PrimusTimers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrimusTimers.m; sourceTree = "<group>"; };
 		E58795701886A94300913F61 /* PrimusTransformers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrimusTransformers.h; sourceTree = "<group>"; };
 		E58795711886A94300913F61 /* PrimusTransformers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrimusTransformers.m; sourceTree = "<group>"; };
-		E58C3F7B19869EDE00461CE7 /* Primus.podspec.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Primus.podspec.json; sourceTree = "<group>"; };
+		E58C3F7B19869EDE00461CE7 /* FPPrimus.podspec.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FPPrimus.podspec.json; sourceTree = "<group>"; };
 		E59D15A318D38401006CFE49 /* SocketRocketWebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketRocketWebSocket.h; sourceTree = "<group>"; };
 		E59D15A418D38401006CFE49 /* SocketRocketWebSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketRocketWebSocket.m; sourceTree = "<group>"; };
 		E5DEB03318AB90A500EAC444 /* SocketRocketClientTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocketRocketClientTest.m; sourceTree = "<group>"; };
@@ -152,7 +152,6 @@
 				0C26392C8AEC79B379A32926 /* Pods-PrimusTests.debug.xcconfig */,
 				72AB0542B034FEFA2C9D91BF /* Pods-PrimusTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -253,7 +252,7 @@
 				E5F94BD71885B5BD00170670 /* Frameworks */,
 				E5F94BD61885B5BD00170670 /* Products */,
 				E5DEB04618ACF82F00EAC444 /* node_modules */,
-				E58C3F7B19869EDE00461CE7 /* Primus.podspec.json */,
+				E58C3F7B19869EDE00461CE7 /* FPPrimus.podspec.json */,
 				E5DEB04218ACE5F200EAC444 /* package.json */,
 				401D872B1FFCA8EDD336A195 /* Pods */,
 			);
@@ -457,6 +456,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = E5F94BCC1885B5BD00170670;

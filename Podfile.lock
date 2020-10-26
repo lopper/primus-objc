@@ -3,6 +3,7 @@ PODS:
   - Emitter (0.0.9):
     - BlocksKit/DynamicDelegate
   - Expecta (1.0.6)
+  - FPSocketRocket (0.4.1.2)
   - GCDTimer (1.1.0)
   - libextobjc/EXTScope (0.6):
     - libextobjc/RuntimeExtensions
@@ -11,23 +12,21 @@ PODS:
   - OCMockito (4.1.0):
     - OCHamcrest (~> 6.0)
   - Reachability (3.2)
-  - socket.IO (0.5.2):
-    - SocketRocket (~> 0.2)
-  - SocketRocket (0.3.1-beta2)
   - Specta (1.0.7)
 
 DEPENDENCIES:
   - Emitter (~> 0.0.9)
   - Expecta
+  - FPSocketRocket (~> 0.4.1.2)
   - GCDTimer (~> 1.1.0)
   - libextobjc/EXTScope (~> 0.6)
   - OCMockito
   - Reachability (~> 3.2)
-  - socket.IO (~> 0.5.2)
-  - SocketRocket (~> 0.3.1-beta2)
   - Specta
 
 SPEC REPOS:
+  "git@bitbucket.org:funpokes/fppodspec.git":
+    - FPSocketRocket
   trunk:
     - BlocksKit
     - Emitter
@@ -37,23 +36,20 @@ SPEC REPOS:
     - OCHamcrest
     - OCMockito
     - Reachability
-    - socket.IO
-    - SocketRocket
     - Specta
 
 SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Emitter: cf50bf44fc8817535018fbd6c4fd576b87803e78
   Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5
+  FPSocketRocket: 362d3fd6f5943341b5a1d76cd005c754be22bad9
   GCDTimer: 5837a5d70a464f86cbc9c56d75efc68f7e7c2fb8
   libextobjc: aed8b7d2b07f511c1a7ecaacb33ea03e327c69b7
   OCHamcrest: 363e1bf738c3e8a94abe7c2c415f70d671adde38
   OCMockito: bceefcd365252bcdf8b59c1b2bd23890805fc0d8
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  socket.IO: eaaaea33481d8a81d8f78e331f0c72ba44758036
-  SocketRocket: 7284ab9370a06c99aba92b2fe3a32aedd0f9a6fa
   Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
 
-PODFILE CHECKSUM: b126c49934f44f1b0d5ca9d8e9d52f18df052d35
+PODFILE CHECKSUM: 941a4adf4375a9c2ecdaf043eaa38229dcd28e54
 
 COCOAPODS: 1.10.0
